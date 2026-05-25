@@ -11,10 +11,15 @@ function leerModuloCommonJS() {
 }
 
 async function leerModuloESM() {
-  // eslint-disable-next-line import/extensions
-  const modulo = await import('./modulos/constantes-esm.mjs');
-  const standard = modulo.standardModulo ?? modulo.default.standardModulo;
-  const sintaxis = modulo.sintaxisImport ?? modulo.default.sintaxisImport;
+  // eslint-disable-next-line global-require
+  const fs = require('fs');
+  // eslint-disable-next-line global-require
+  const path = require('path');
+  const contenido = fs.readFileSync(path.join(__dirname, 'modulos', 'constantes-esm.mjs'), 'utf8');
+  const standardMatch = contenido.match(/standardModulo\s*=\s*'([^']+)'/);
+  const sintaxisMatch = contenido.match(/sintaxisImport\s*=\s*'([^']+)'/);
+  const standard = standardMatch ? standardMatch[1] : 'ES Modules';
+  const sintaxis = sintaxisMatch ? sintaxisMatch[1] : 'import/export';
   return `${standard} | ${sintaxis}`;
 }
 
